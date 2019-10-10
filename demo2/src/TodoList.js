@@ -1,6 +1,12 @@
 import React,{Component} from 'react'
 import store from './store/index.js'
-import {getInputChangeValue,getAddItem,getDeleteItemAction} from './store/actionCreators.js'
+import {
+  getInputChangeValue,
+  getAddItem,
+  getDeleteItemAction,
+  getTodoList
+} from './store/actionCreators.js'
+import TodoListUI from './TodoListUI.js'
 
 class TodoList extends Component {
   constructor(props){
@@ -16,31 +22,38 @@ class TodoList extends Component {
   }
   render(){
     return(
-      <div>
-        <div>
-          <input            
-            onChange={this.handleInputChange}
-            value={this.state.inputValue}/>
-          <button onClick={this.handleClickBth}>
-            提交
-          </button>
-        </div>
-        <div>
-          <ul >
-            {
-              this.state.list.map((item,index)=>{
-                return (
-                  <li
-                    onClick={()=>{this.handleClickDeleteItem(index)}} 
-                    key={index}>
-                    {item}
-                  </li>
-                )
-              })
-            }
-          </ul>
-        </div>
-      </div>
+      <TodoListUI 
+        handleInputChange={this.handleInputChange}
+        inputValue={this.state.inputValue}
+        handleClickBth={this.handleClickBth}
+        list={this.state.list}
+        handleClickDeleteItem={this.handleClickDeleteItem}
+        />
+      // <div>
+      //   <div>
+      //     <input            
+      //       onChange={this.handleInputChange}
+      //       value={this.state.inputValue}/>
+      //     <button onClick={this.handleClickBth}>
+      //       提交
+      //     </button>
+      //   </div>
+      //   <div>
+      //     <ul >
+      //       {
+      //         this.state.list.map((item,index)=>{
+      //           return (
+      //             <li
+      //               onClick={()=>{this.handleClickDeleteItem(index)}} 
+      //               key={index}>
+      //               {item}
+      //             </li>
+      //           )
+      //         })
+      //       }
+      //     </ul>
+      //   </div>
+      // </div>
     )
   }
   // store改变执行
@@ -48,41 +61,23 @@ class TodoList extends Component {
     this.setState(store.getState())
   }
   handleInputChange(e){
-    // const action={
-    //   type: 'change_input_value',
-    //   value: e.target.value
-    // }
     const action=getInputChangeValue(e.target.value)
     store.dispatch(action)
   }
   handleClickBth(){
-    // this.setState((prevState)=>{
-    //   return{
-    //     list: [...prevState.list,prevState.inputValue],
-    //     inputValue: ''
-    //   }
-    // })
-    // const action={
-    //   type: 'add_item'
-    // }
     const action =getAddItem()
     store.dispatch(action)
   }
   handleClickDeleteItem(index){
-    // console.log(index)
-    // this.setState((prevState)=>{
-    //   const list=[...prevState.list]
-    //   list.splice(index,1)
-    //   return{
-    //     list
-    //   }
-    // })
-    // const action={
-    //   type: 'delete_item',
-    //   value: index
-    // }
     const action=getDeleteItemAction(index)
     store.dispatch(action)
+  }
+  initList(){
+    const action=getTodoList()
+    store.dispatch(action)
+  }
+  componentDidMount(){
+    this.initList()
   }
 }
 
